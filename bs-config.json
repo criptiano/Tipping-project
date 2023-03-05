@@ -1,0 +1,8 @@
+{
+    "server": {
+      "baseDir": ["./rsc"]
+    },
+    "port": 3000,
+    "files": ["./rsc/**/*.{html,htm,css,js}"]
+  }
+  

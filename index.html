@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CatCoin</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>CatCoin</h1>
+    </header>
+    <main>
+        <p>This is a platform where users can send their appreciation to others in a form of CAT. Show off your CAT balance as the proof of your kindness!!</p>
+        <div class="balance-container">
+            <h2>Your CatCoin Balance:</h2>
+            <span id="balance"></span> CAT
+        </div>
+        <button id="connect-metamask-button">Connect to Metamask</button>
+        <form id="send-form">
+            <h2>Send CatCoin:</h2>
+            <label for="recipient">Recipient:</label>
+            <input type="text" id="recipient" name="recipient" required>
+            <label for="amount">Amount:</label>
+            <input type="number" id="amount" name="amount" required>
+            <button type="submit">Send</button>
+        </form>
+        <div id="result"></div>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/@metamask/detect-provider@1.2.1/dist/detect-provider.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
+
+
+
