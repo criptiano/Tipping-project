@@ -1,15 +1,11 @@
-// Import the web3 library
-const Web3 = require('web3');
+console.log("Script loaded");
 
-// Check if the user has MetaMask installed
 if (typeof window.ethereum !== 'undefined') {
     console.log('MetaMask is installed!');
 }
 
-// Set up the web3 provider to use the local development network
 const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:7545"));
 
-// Get the user's accounts from the local development network
 web3.eth.getAccounts()
     .then((accounts) => {
         userAddress = accounts[0];
@@ -19,45 +15,80 @@ web3.eth.getAccounts()
         console.error(error);
     });
 
-// Get the contract address and ABI from the deployed contract
 const contractAddress = "0x99D2f964F1f2996502E5eE1eaFcB09d967fcB224";
 const contractABI = [
-	{ inputs: [], stateMutability: 'nonpayable', type: 'constructor' },
-	{
-	  anonymous: false,
-	  inputs: [ [Object], [Object], [Object] ],
-	  name: 'Sent',
-	  type: 'event'
-	},
-	{
-	  inputs: [ [Object] ],
-	  name: 'balances',
-	  outputs: [ [Object] ],
-	  stateMutability: 'view',
-	  type: 'function',
-	  constant: true
-	},
-	{
-	  inputs: [ [Object], [Object] ],
-	  name: 'send',
-	  outputs: [],
-	  stateMutability: 'nonpayable',
-	  type: 'function'
-	},
-	{
-	  inputs: [ [Object] ],
-	  name: 'balanceOf',
-	  outputs: [ [Object] ],
-	  stateMutability: 'view',
-	  type: 'function',
-	  constant: true
-	}
-  ];
+    {
+        "inputs": [],
+        "stateMutability": "nonpayable",
+        "type": "constructor"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "from",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "to",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            }
+        ],
+        "name": "Sent",
+        "type": "event"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "receiver",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            }
+        ],
+        "name": "send",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "account",
+                "type": "address"
+            }
+        ],
+        "name": "balanceOf",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    }
+];
 
 // Create an instance of the contract
 const catCoin = new web3.eth.Contract(contractABI, contractAddress);
 
-// Get the user's address
 let userAddress;
 
 web3.eth.getAccounts()
@@ -69,18 +100,19 @@ web3.eth.getAccounts()
         console.error(error);
     });
 
-// Get the user's balance of CatCoin and display it
+// Get the user's balance of CatCoin and display
 async function getBalance() {
     if (!userAddress) {
         console.log("No user address found");
         return;
     }
 
+    console.log("Getting balance for:", userAddress);
     const balance = await catCoin.methods.balanceOf(userAddress).call();
     document.getElementById("balance").innerText = balance.toString();
 }
 
-// Handle the form submission to send CatCoin to another address
+// The submission form to send CatCoin to another address
 const form = document.getElementById("send-form");
 
 form.addEventListener("submit", async (event) => {
@@ -94,16 +126,18 @@ form.addEventListener("submit", async (event) => {
     const toAddress = event.target.elements.recipient.value;
     const amount = event.target.elements.amount.value;
 
-    const transaction = await catCoin.methods.transfer(toAddress, amount).send({ from: userAddress });
+    console.log("Sending transaction:", toAddress, amount);
+    const transaction = await catCoin.methods.send(toAddress, amount).send({ from: userAddress });
 
     document.getElementById("result").innerText = `Sent ${amount} CatCoin to ${toAddress}`;
     getBalance();
 });
 
-// Handle the MetaMask connection button
-const connectButton = document.getElementById("connect-button");
+// The MetaMask connection button
+const connectButton = document.getElementById("connect-metamask-button");
 
 connectButton.addEventListener("click", async () => {
+    console.log("Attempting to connect to MetaMask");
     try {
         // Request account access if needed
         await window.ethereum.request({ method: 'eth_requestAccounts' });
@@ -115,5 +149,3 @@ connectButton.addEventListener("click", async () => {
     }
 });
 
-
-  
